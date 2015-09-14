@@ -22,3 +22,38 @@ For feedback and questions about sig11 please e-mail one of the authors named
 in the AUTHORS file.
 **********************************************************************/
 #include "sig11/sig11.hpp"
+
+namespace sig11 {
+
+/* sig11::connection */
+
+connection::connection(std::nullptr_t):
+    m_valid(false),
+    m_id(0)
+{
+
+}
+
+connection::connection(connection &&src):
+    m_valid(src.m_valid),
+    m_id(src.m_id)
+{
+    src.m_valid = false;
+}
+
+connection &connection::operator=(connection &&src)
+{
+    m_valid = src.m_valid;
+    m_id = src.m_id;
+    src.m_valid = false;
+    return *this;
+}
+
+connection::connection(token_id id):
+    m_valid(true),
+    m_id(id)
+{
+
+}
+
+}
