@@ -1,5 +1,5 @@
 /**********************************************************************
-File name: first.cpp
+File name: signal.cpp
 This file is part of: sig11
 
 LICENSE
