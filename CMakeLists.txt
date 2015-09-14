@@ -8,6 +8,8 @@ set(SIG11_HEADERS
    include/sig11/sig11.hpp
 )
 
+find_package(Threads REQUIRED)
+
 add_library(sig11 STATIC ${SIG11_SRCS})
 set_property(TARGET sig11 PROPERTY CXX_STANDARD 14)
 set_property(TARGET sig11 PROPERTY CXX_STANDARD_REQUIRED ON)
@@ -27,7 +29,7 @@ set(SIG11_TEST_SRCS
 
 add_executable(sig11_tests ${SIG11_TEST_SRCS})
 target_include_directories(sig11_tests PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/tests/Catch/include)
-target_link_libraries(sig11_tests sig11)
+target_link_libraries(sig11_tests sig11 ${CMAKE_THREAD_LIBS_INIT})
 set_property(TARGET sig11_tests PROPERTY CXX_STANDARD 14)
 set_property(TARGET sig11_tests PROPERTY CXX_STANDARD_REQUIRED ON)
 target_compile_options(sig11_tests PRIVATE -Wall -Wextra)
