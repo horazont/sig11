@@ -69,12 +69,16 @@ public:
 template <typename...>
 class signal;
 
+template <typename call_t>
+class connection_guard;
+
 template <typename result_t, typename... arg_ts>
 class signal<result_t(arg_ts...)>
 {
 public:
     using call_t = result_t(arg_ts...);
     using function_type = std::function<call_t>;
+    using guard_t = connection_guard<call_t>;
 
 public:
     signal():
@@ -202,6 +206,13 @@ public:
     }
 
 };
+
+template <typename call_t, typename callable_t>
+static inline connection_guard<call_t> connect(signal<call_t> &signal,
+                                               callable_t &&receiver)
+{
+    return connection_guard<call_t>(signal.connect(std::forward<callable_t>(receiver)), signal);
+}
 
 }
 

@@ -272,3 +272,20 @@ TEST_CASE("sig11/signal/thread_safety_disconnect_vs_emit")
 
     thread.join();
 }
+
+
+TEST_CASE("sig11/connect")
+{
+    sig11::signal<void(int)> signal;
+    int destination = 0;
+
+    auto fun = [&destination](int value){ destination = value; };
+
+    sig11::connect(signal, fun);
+    signal(10);
+    CHECK(destination == 0);
+
+    auto guard(sig11::connect(signal, fun));
+    signal(10);
+    CHECK(destination == 10);
+}
