@@ -20,18 +20,30 @@ TEST_CASE("sig11/connection/default_constructor")
 {
     sig11::connection conn;
     CHECK_FALSE(conn);
+    CHECK(conn == nullptr);
+    CHECK(nullptr == conn);
+    CHECK_FALSE(conn != nullptr);
+    CHECK_FALSE(nullptr != conn);
 }
 
 TEST_CASE("sig11/connection/token_id_constructor")
 {
     CHECK(sig11::testutils::make_conn(10).id() == 10);
     CHECK(sig11::testutils::make_conn(10));
+    CHECK(sig11::testutils::make_conn(10) != nullptr);
+    CHECK(nullptr != sig11::testutils::make_conn(10));
+    CHECK_FALSE(sig11::testutils::make_conn(10) == nullptr);
+    CHECK_FALSE(nullptr == sig11::testutils::make_conn(10));
 }
 
 TEST_CASE("sig11/connection/nullptr_constructor")
 {
     sig11::connection conn(nullptr);
     CHECK_FALSE(conn);
+    CHECK(conn == nullptr);
+    CHECK(nullptr == conn);
+    CHECK_FALSE(conn != nullptr);
+    CHECK_FALSE(nullptr != conn);
 }
 
 TEST_CASE("sig11/connection/move_constructor")

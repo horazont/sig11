@@ -49,11 +49,24 @@ connection &connection::operator=(connection &&src)
     return *this;
 }
 
+connection &connection::operator=(std::nullptr_t)
+{
+    m_valid = false;
+    m_id = 0;
+    return *this;
+}
+
 connection::connection(token_id id):
     m_valid(true),
     m_id(id)
 {
 
+}
+
+void swap(connection &a, connection &b)
+{
+    std::swap(a.m_valid, b.m_valid);
+    std::swap(a.m_id, b.m_id);
 }
 
 }

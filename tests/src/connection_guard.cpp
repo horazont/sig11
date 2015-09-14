@@ -12,12 +12,20 @@ TEST_CASE("sig11/connection_guard/default_constructor")
 {
     sig11::connection_guard<void(int)> guard;
     CHECK_FALSE(guard);
+    CHECK(guard == nullptr);
+    CHECK(nullptr == guard);
+    CHECK_FALSE(guard != nullptr);
+    CHECK_FALSE(nullptr != guard);
 }
 
 TEST_CASE("sig11/connection_guard/nullptr_constructor")
 {
     sig11::connection_guard<void(int)> guard(nullptr);
     CHECK_FALSE(guard);
+    CHECK(guard == nullptr);
+    CHECK(nullptr == guard);
+    CHECK_FALSE(guard != nullptr);
+    CHECK_FALSE(nullptr != guard);
 }
 
 TEST_CASE("sig11/connection_guard/connection_constructor")
@@ -30,6 +38,10 @@ TEST_CASE("sig11/connection_guard/connection_constructor")
         CHECK(conn);
         sig11::connection_guard<void(int)> guard(std::move(conn), signal);
         CHECK(guard);
+        CHECK(guard != nullptr);
+        CHECK(nullptr != guard);
+        CHECK_FALSE(guard == nullptr);
+        CHECK_FALSE(nullptr == guard);
         CHECK_FALSE(conn);
     }
     SECTION("with invalid connection")
@@ -37,6 +49,10 @@ TEST_CASE("sig11/connection_guard/connection_constructor")
         sig11::connection conn(nullptr);
         CHECK_FALSE(conn);
         sig11::connection_guard<void(int)> guard(std::move(conn), signal);
+        CHECK(guard == nullptr);
+        CHECK(nullptr == guard);
+        CHECK_FALSE(guard != nullptr);
+        CHECK_FALSE(nullptr != guard);
         CHECK_FALSE(guard);
     }
 }
@@ -121,4 +137,34 @@ TEST_CASE("sig11/connection_guard/disconnect()")
 
     signal(30);
     CHECK(destination == 20);
+}
+
+TEST_CASE("sig11/connection_guard/swap")
+{
+    sig11::signal<void(int)> signal;
+    int destination1 = 0;
+    int destination2 = 0;
+
+    auto fun1 = [&destination1](int value){ destination1 = value; };
+    auto fun2 = [&destination2](int value){ destination2 = value; };
+
+    sig11::connection_guard<void(int)> guard1(signal.connect(fun1), signal);
+    sig11::connection_guard<void(int)> guard2(signal.connect(fun2), signal);
+    signal(10);
+    CHECK(destination1 == 10);
+    CHECK(destination2 == 10);
+    signal(20);
+    CHECK(destination1 == 20);
+    CHECK(destination2 == 20);
+    swap(guard1, guard2);
+    CHECK(guard2);
+    CHECK(guard1);
+    signal(30);
+    CHECK(destination1 == 30);
+    CHECK(destination2 == 30);
+
+    guard2.disconnect();
+    signal(40);
+    CHECK(destination1 == 30);
+    CHECK(destination2 == 40);
 }
