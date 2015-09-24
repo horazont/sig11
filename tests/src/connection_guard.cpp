@@ -162,6 +162,26 @@ TEST_CASE("sig11/connection_guard/disconnect()")
     CHECK(destination == 20);
 }
 
+TEST_CASE("sig11/connection_guard/release()")
+{
+    sig11::signal<void(int)> signal;
+    int destination = 0;
+
+    auto fun = [&destination](int value){ destination = value; };
+
+
+    sig11::connection_guard<void(int)> guard(signal.connect(fun), signal);
+    signal(10);
+    CHECK(destination == 10);
+    signal(20);
+    CHECK(destination == 20);
+    guard.release();
+    CHECK_FALSE(guard);
+
+    signal(30);
+    CHECK(destination == 30);
+}
+
 TEST_CASE("sig11/connection_guard/swap")
 {
     sig11::signal<void(int)> signal;

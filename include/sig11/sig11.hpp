@@ -377,10 +377,22 @@ public:
     {
         if (m_signal) {
             m_signal->disconnect(m_connection);
+            release();
+        }
+    }
+
+    /**
+     * Clear the connection guard without disconnecting the connection held by
+     * it.
+     */
+    void release()
+    {
+        if (m_signal) {
             m_connection = nullptr;
             m_signal = nullptr;
         }
     }
+
 
     template <typename T> friend void swap(connection_guard<T> &a, connection_guard<T> &b);
 
